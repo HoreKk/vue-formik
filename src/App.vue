@@ -1,6 +1,11 @@
 <script setup>
 
 import FormikVue from './components/Formik.vue';
+import Field from './components/Field.vue';
+
+import { ref } from 'vue';
+
+const submitValues = ref({});
 
 const validation = (values) => {
   const errors = {};
@@ -15,8 +20,7 @@ const validation = (values) => {
 }
 
 const handleSubmitTest = async (values, isSubmitting) => {
-  console.log(values);
-  await new Promise((resolve) => setTimeout(resolve, 1000));
+  submitValues.value = JSON.parse(JSON.stringify(values));
   isSubmitting.value = false;
 }
 
@@ -25,21 +29,62 @@ const handleSubmitTest = async (values, isSubmitting) => {
 <template>
   <main>
     <FormikVue
-      :initialValues="{ email: 'azenoxe@gmail.com' }"
+      :initialValues="{ email: '', isStaff: false, date: '', select: '' }"
       :validate="validation"
       @submit="handleSubmitTest"
     >
       <template #default="{ values, errors, handleSubmit, isSubmitting }">
-        <form @submit.prevent="handleSubmit(values)">
-          <input
+        <form
+          style="display: flex; flex-direction: column; gap: 10px; align-items: flex-start;"
+          @submit.prevent="handleSubmit(values)"
+        >
+          <h1>Formik in Vue</h1>
+          <Field
             type="email"
             name="email"
+            component="input"
             v-model="values.email"
           />
           <template v-if="errors.email">
-            <p>{{ errors.email }}</p>
+            <p>Email : {{ errors.email }}</p>
           </template>
-          <button type="submit" :disabled="isSubmitting">Submit</button>
+          <Field
+            type="checkbox"
+            name="isStaff"
+            component="input"
+            v-model="values.isStaff"
+          />
+          <template v-if="errors.isStaff">
+            <p>IsStaff : {{ errors.isStaff }}</p>
+          </template>
+          <Field
+            type="date"
+            name="date"
+            component="input"
+            v-model="values.date"
+          />
+          <template v-if="errors.date">
+            <p>Date : {{ errors.date }}</p>
+          </template>
+          <Field
+            type="select"
+            name="select"
+            component="select"
+            v-model="values.select"
+          >
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+          </Field>
+          <template v-if="errors.select">
+            <p>Select : {{ errors.select }}</p>
+          </template>
+          <div>
+            {{ JSON.stringify(submitValues, null, 4) }}
+          </div>
+          <button type="submit" :disabled="isSubmitting">
+            Submit
+          </button>
         </form>
       </template>
     </FormikVue>
