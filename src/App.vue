@@ -39,8 +39,10 @@ const handleSubmitTest = async (values, isSubmitting) => {
           @submit.prevent="handleSubmit(values)"
         >
           <h1>Formik in Vue</h1>
+          <!-- on met type 'text' ici et pas 'email' pour pas avoir la popup de base html5 quand on rentre un mauvais email -->
+          <!-- mais le type 'email' marche aussi -->
           <Field
-            type="email"
+            type="text"
             name="email"
             component="input"
             v-model="values.email"
