@@ -1,19 +1,48 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
+
+import FormikVue from './components/Formik.vue';
+
+const validation = (values) => {
+  const errors = {};
+  if (!values.email) {
+    errors.email = 'Required';
+  } else if (
+    !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)
+  ) {
+    errors.email = 'Invalid email address';
+  }
+  return errors;
+}
+
+const handleSubmitTest = async (values, isSubmitting) => {
+  console.log(values);
+  await new Promise((resolve) => setTimeout(resolve, 1000));
+  isSubmitting.value = false;
+}
+
 </script>
 
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
-
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
-    </div>
-  </header>
-
   <main>
-    <TheWelcome />
+    <FormikVue
+      :initialValues="{ email: 'azenoxe@gmail.com' }"
+      :validate="validation"
+      @submit="handleSubmitTest"
+    >
+      <template #default="{ values, errors, handleSubmit, isSubmitting }">
+        <form @submit.prevent="handleSubmit(values)">
+          <input
+            type="email"
+            name="email"
+            v-model="values.email"
+          />
+          <template v-if="errors.email">
+            <p>{{ errors.email }}</p>
+          </template>
+          <button type="submit" :disabled="isSubmitting">Submit</button>
+        </form>
+      </template>
+    </FormikVue>
   </main>
 </template>
 
